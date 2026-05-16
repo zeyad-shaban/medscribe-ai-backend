@@ -13,7 +13,7 @@ jobs:
           fetch-depth: 0
           lfs: true
       - name: Push to hub
-        uses: huggingface/hub-sync@v1
+        uses: huggingface/hub-sync@main
         with:
           github_repo_id: zeyad-shaban/medscribe-ai-backend
           huggingface_repo_id: zeyadcode/medscribe-backend
