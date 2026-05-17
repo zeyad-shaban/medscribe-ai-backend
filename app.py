@@ -2,11 +2,12 @@ import io
 import numpy as np
 from scipy.io import wavfile
 import librosa
-from fastapi import Depends, FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from utils.audio_cleaning import denoise_audio, normalize_audio
-from config.settings import Settings, get_settings
+from config.settings import get_settings
 from config import constants
 from groq import Groq
+from schemas.transcription import TranscriptionResponse
 
 groq_client = Groq(api_key=get_settings().groq_secret_key)
 app = FastAPI()
@@ -17,8 +18,8 @@ def root():
     return {"status": "ok"}
 
 
-@app.post("/transcribe")
-async def process_and_transcribe(file: UploadFile = File(...)):
+@app.post("/transcribe", response_model=TranscriptionResponse)
+async def process_and_transcribe(file: UploadFile = File(...)) -> TranscriptionResponse:
     audio_bytes = await file.read()
     print(f"File size: {len(audio_bytes)} bytes")
     if len(audio_bytes) == 0:
@@ -40,17 +41,18 @@ async def process_and_transcribe(file: UploadFile = File(...)):
     export_buffer.seek(0)
 
     try:
+        filename = file.filename if file.filename else "audio.wav"
         transcription = groq_client.audio.transcriptions.create(
-            file=(file.filename, export_buffer.read()),
+            file=(filename, export_buffer.read()),
             model=constants.GROQ_MODEL_NAME,
             response_format="json",
             language="en",
         )
-        return {
-            "transcript": transcription.text,
-            "filename": file.filename,
-            "duration_seconds": round(len(waveform) / sr, 2),
-        }
+        return TranscriptionResponse(
+            transcript=transcription.text,
+            filename=filename,
+            duration_seconds=round(len(waveform) / sr, 2),
+        )
 
     except Exception as e:
         print(f"Groq API Error: {e}")
