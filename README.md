@@ -35,7 +35,7 @@ Demo Video: [YouTube walkthrough](https://youtu.be/qco3Urdr8m8)
 - Demo Video: [YouTube walkthrough](https://youtu.be/qco3Urdr8m8)
 
 <a href="https://youtu.be/qco3Urdr8m8">
-  <img src="https://img.youtube.com/vi/qco3Urdr8m8/hqdefault.jpg" alt="Watch the Medscribe AI demo video" width="720">
+  <img src="https://img.youtube.com/vi/JsxUC4rlH0s/hqdefault.jpg" alt="Watch the Medscribe AI demo video" width="720">
 </a>
 
 ## Screenshots
